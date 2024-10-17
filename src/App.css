@@ -233,3 +233,18 @@ footer {
 .crack-timediv::-webkit-scrollbar-thumb:hover {
   background: #8a8989; /* Color of the scrollbar thumb on hover */
 }
+
+.copy-password-btn {
+  margin-left: 10px;
+  cursor: pointer;
+  color: #749c79;
+}
+
+.copy-password-btn:hover {
+  color: #09921b;
+}
+
+.copy-status {
+  margin-left: 10px;
+  color: green;
+}

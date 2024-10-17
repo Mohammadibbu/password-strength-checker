@@ -15,6 +15,7 @@ function App() {
     specialChar: false,
   });
   const [crackTime, setCrackTime] = useState("");
+  const [copyStatus, setCopyStatus] = useState("");
 
   const calculateCrackTime = (password) => {
     const lowerCase = 26;
@@ -33,67 +34,6 @@ function App() {
 
     return convertTime(timeInSeconds);
   };
-  const numberToWordsWithNumbers = (num) => {
-    const belowTwenty = [
-      "",
-      "one",
-      "two",
-      "three",
-      "four",
-      "five",
-      "six",
-      "seven",
-      "eight",
-      "nine",
-      "ten",
-      "eleven",
-      "twelve",
-      "thirteen",
-      "fourteen",
-      "fifteen",
-      "sixteen",
-      "seventeen",
-      "eighteen",
-      "nineteen",
-    ];
-    const tens = [
-      "",
-      "",
-      "twenty",
-      "thirty",
-      "forty",
-      "fifty",
-      "sixty",
-      "seventy",
-      "eighty",
-      "ninety",
-    ];
-    const thousands = ["", "thousand", "million", "billion"];
-
-    if (num === 0) return "0";
-    let words = "";
-
-    for (let i = 0; num > 0; i++) {
-      let chunk = num % 1000;
-      if (chunk) {
-        let chunkWords = "";
-        if (chunk >= 100) {
-          chunkWords += `${belowTwenty[Math.floor(chunk / 100)]} hundred `;
-          chunk %= 100;
-        }
-        if (chunk >= 20) {
-          chunkWords += `${tens[Math.floor(chunk / 10)]} `;
-          chunk %= 10;
-        }
-        if (chunk > 0) {
-          chunkWords += `${belowTwenty[chunk]} `;
-        }
-        words = `${chunkWords.trim()} ${thousands[i]} (${chunk}) ` + words;
-      }
-      num = Math.floor(num / 1000);
-    }
-    return words.trim();
-  };
 
   const convertTime = (seconds) => {
     const timeUnits = [
@@ -102,6 +42,8 @@ function App() {
       { unit: "trillion years", value: 1e12 * 365 * 24 * 60 * 60 },
       { unit: "billion years", value: 1e9 * 365 * 24 * 60 * 60 },
       { unit: "million years", value: 1e6 * 365 * 24 * 60 * 60 },
+      { unit: "centuries", value: 100 * 365 * 24 * 60 * 60 },
+      { unit: "decades", value: 10 * 365 * 24 * 60 * 60 },
       { unit: "years", value: 365 * 24 * 60 * 60 },
       { unit: "days", value: 24 * 60 * 60 },
       { unit: "hours", value: 60 * 60 },
@@ -109,35 +51,22 @@ function App() {
       { unit: "seconds", value: 1 },
     ];
 
-    // Check for large values beyond quintillion
-    if (seconds >= timeUnits[0].value) {
-      let remaining = seconds;
-      let formatted = [];
+    let remaining = seconds;
+    let formatted = [];
 
-      for (let i = 0; i < timeUnits.length; i++) {
-        const { unit, value } = timeUnits[i];
-        const count = Math.floor(remaining / value);
-        if (count > 0) {
-          formatted.push(`${count} ${unit}`);
-          remaining %= value;
-        }
-      }
-      return formatted.join(" ");
-    }
-
-    // For smaller values, return the standard format
-    for (const { unit, value } of timeUnits) {
-      if (seconds >= value) {
-        const numberValue = (seconds / value).toFixed(2);
-        return `${numberValue} ${unit}`;
+    for (let i = 0; i < timeUnits.length; i++) {
+      const { unit, value } = timeUnits[i];
+      const count = Math.floor(remaining / value);
+      if (count > 0) {
+        formatted.push(`${count} ${unit}`);
+        remaining %= value;
       }
     }
-
-    return "Less than a second";
+    return formatted.join(" ") || "Less than a second";
   };
 
   const checkStrength = (password) => {
-    const isLengthValid = password.length >= 6;
+    const isLengthValid = password.length >= 8;
     const isLowercaseValid = /[a-z]/.test(password);
     const isUppercaseValid = /[A-Z]/.test(password);
     const isNumberValid = /\d/.test(password);
@@ -155,7 +84,6 @@ function App() {
 
     setConditionsMet(conditions);
 
-    // Calculate estimated crack time if the password is not empty
     let estimatedTime = "";
     if (password.length > 0) {
       estimatedTime = calculateCrackTime(password);
@@ -166,32 +94,50 @@ function App() {
       return;
     }
 
-    // Determine strength based on conditions and estimated time
+    // Parsing the estimated time for better comparison
+    const [timeValue, unit] = estimatedTime.split(" ");
+    let totalTimeInSeconds = parseFloat(timeValue);
+
+    // Conversion logic
+    if (unit.includes("quintillion years"))
+      totalTimeInSeconds *= 1e18 * 365 * 24 * 60 * 60;
+    else if (unit.includes("quadrillion years"))
+      totalTimeInSeconds *= 1e15 * 365 * 24 * 60 * 60;
+    else if (unit.includes("trillion years"))
+      totalTimeInSeconds *= 1e12 * 365 * 24 * 60 * 60;
+    else if (unit.includes("billion years"))
+      totalTimeInSeconds *= 1e9 * 365 * 24 * 60 * 60;
+    else if (unit.includes("million years"))
+      totalTimeInSeconds *= 1e6 * 365 * 24 * 60 * 60;
+    else if (unit.includes("centuries"))
+      totalTimeInSeconds *= 100 * 365 * 24 * 60 * 60;
+    else if (unit.includes("decades"))
+      totalTimeInSeconds *= 10 * 365 * 24 * 60 * 60;
+    else if (unit.includes("years")) totalTimeInSeconds *= 365 * 24 * 60 * 60;
+    else if (unit.includes("days")) totalTimeInSeconds *= 24 * 60 * 60;
+    else if (unit.includes("hours")) totalTimeInSeconds *= 60 * 60;
+    else if (unit.includes("minutes")) totalTimeInSeconds *= 60;
+
     let strengthLevel = "";
 
-    // Define thresholds for strength based on time to crack
-    const timeInSeconds = estimatedTime.split(" ")[0]; // Get the numerical value of time
-    const unit = estimatedTime.split(" ")[1]; // Get the unit (e.g., years, days)
-    const timeValue = parseFloat(timeInSeconds);
-
-    // Use estimated time in seconds for comparison
-    let totalTimeInSeconds = timeValue;
-    if (unit.includes("year")) totalTimeInSeconds *= 365 * 24 * 60 * 60;
-    else if (unit.includes("day")) totalTimeInSeconds *= 24 * 60 * 60;
-    else if (unit.includes("hour")) totalTimeInSeconds *= 60 * 60;
-    else if (unit.includes("minute")) totalTimeInSeconds *= 60;
-
-    // Determine strength level based on time and conditions met
-    if (noConditionsMet < 2 || totalTimeInSeconds < 60) {
+    if (noConditionsMet < 2 || totalTimeInSeconds < 30) {
       strengthLevel = "weak";
     } else if (noConditionsMet < 4 || totalTimeInSeconds < 3600) {
-      // Less than an hour
       strengthLevel = "medium";
     } else {
       strengthLevel = "strong";
     }
 
     setStrength(strengthLevel);
+  };
+
+  const handleCopyPassword = () => {
+    if (password) {
+      navigator.clipboard.writeText(password).then(() => {
+        setCopyStatus("Copied!");
+        setTimeout(() => setCopyStatus(""), 2000); // Clear status after 2 seconds
+      });
+    }
   };
 
   return (
@@ -218,6 +164,21 @@ function App() {
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? "HIDE" : "SHOW"}
+            </span>
+            <span
+              className="copy-password-btn"
+              onClick={handleCopyPassword}
+              style={{ cursor: "pointer", marginLeft: "10px" }}
+            >
+              Copy Password
+              {copyStatus && (
+                <span
+                  className="copy-status"
+                  style={{ cursor: "pointer", marginLeft: "10px" }}
+                >
+                  {copyStatus}
+                </span>
+              )}
             </span>
           </div>
           <div className={`indicator ${strength}`}>
