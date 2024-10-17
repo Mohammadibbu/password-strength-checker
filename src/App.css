@@ -1,38 +1,235 @@
-.App {
-  text-align: center;
+@import url("https://fonts.googleapis.com/css?family=Orbitron&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Orbitron", sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  background: url("https://img.freepik.com/premium-vector/matrix-hacker-card-background-web-design-style-your-business-vector-illustration_287964-979.jpg?semt=ais_hybrid")
+    no-repeat center center fixed; /* Add your binary image */
+  background-size: cover; /* Cover the whole screen */
+  color: #00ff00; /* Green text */
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
+.content {
+  background: rgba(0, 0, 0, 0.8); /* Dark transparent background */
+  padding: 20px 30px;
+  max-width: 600px;
+  margin: 50px auto; /* Center the container */
+  border-radius: 5px;
+  box-shadow: 0 0 15px rgba(0, 255, 0, 0.5), 0 0 30px rgba(0, 255, 0, 0.4); /* Green glow */
+  animation: neon-flicker 2s infinite alternate; /* Fade-in and flicker effect */
+}
+
+/* Neon Flicker Animation */
+@keyframes neon-flicker {
+  0% {
+    box-shadow: 0 0 2px rgba(0, 255, 0, 0.5), 0 0 20px rgba(0, 255, 0, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 2px rgba(56, 112, 56, 0.8), 0 0 20px rgba(0, 255, 0, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 2px rgba(0, 255, 0, 0.5), 0 0 30px rgba(0, 255, 0, 0.4);
   }
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+h1,
+h3 {
+  margin-bottom: 20px;
+}
+
+.field {
+  position: relative;
+}
+
+.field input {
+  width: 100%;
+  height: 45px;
+  border: 1px solid #00ff00; /* Green border */
+  padding-left: 15px;
+  outline: none;
+  border-radius: 5px;
+  font-size: 17px;
+  transition: all 0.3s;
+  background: rgba(0, 0, 0, 0.6); /* Darker input field */
+  color: #00ff00; /* Green text */
+}
+
+.field input:focus {
+  border-color: #00ff00;
+  box-shadow: 0 0 3px #00ff00; /* Glow effect */
+}
+
+.showBtn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #00ff00; /* Green color */
+}
+
+.indicator {
+  height: 10px;
+  margin: 10px 0;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: space-between;
 }
 
-.App-link {
-  color: #61dafb;
+.indicator span {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  background: lightgrey;
+  border-radius: 5px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.indicator span.active:before {
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.indicator span.weak:before {
+  background-color: #ff4757; /* Red for weak */
+}
+
+.indicator span.medium:before {
+  background-color: orange; /* Orange for medium */
+}
+
+.indicator span.strong:before {
+  background-color: #23ad5c; /* Green for strong */
+}
+
+.text {
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: -10px;
+}
+
+.text.weak {
+  color: #ff4757; /* Red */
+}
+
+.text.medium {
+  color: orange; /* Orange */
+}
+
+.text.strong {
+  color: #23ad5c; /* Green */
+}
+
+.tips {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.tips h3 {
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+.tips ul {
+  list-style-type: none;
+}
+
+.tips li {
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+.tips i {
+  margin-right: 8px;
+  color: #00ff00; /* Icon color */
+}
+
+.additional-content {
+  margin: 20px 0;
+  text-align: left;
+}
+
+footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+  .container {
+    width: 90%; /* Full width on small screens */
+    padding: 15px; /* Less padding */
   }
-  to {
-    transform: rotate(360deg);
-  }
+}
+
+.conditions ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.conditions li {
+  font-size: 16px;
+  color: #ff0000; /* Default color for unmet conditions */
+}
+
+.conditions li.satisfied {
+  color: #23ad5c; /* Green for satisfied conditions */
+}
+
+.tips-section {
+  margin-top: 20px;
+}
+
+.toggle-tips {
+  background: none;
+  border: none;
+  color: #00ff00; /* Green color for the button */
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.tips {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 5px;
+}
+.crack-timediv {
+  max-height: 70px; /* Adjust as needed */
+  overflow-y: auto; /* Enables vertical scrolling */
+  border: 1px solid #3f6908e1; /* Optional: adds a border */
+  padding: 10px; /* Optional: adds some padding */
+  margin-top: 10px; /* Optional: spacing above */
+  border-radius: 8px;
+  background-color: #00000067; /* Optional: background color */
+}
+/* WebKit browsers (Chrome, Safari) */
+.crack-timediv::-webkit-scrollbar {
+  width: 2px; /* Width of the scrollbar */
+}
+
+.crack-timediv::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Background of the scrollbar track */
+  border-radius: 2px;
+}
+
+.crack-timediv::-webkit-scrollbar-thumb {
+  background: #888; /* Color of the scrollbar thumb */
+  border-radius: 2px; /* Round the corners of the scrollbar thumb */
+}
+
+.crack-timediv::-webkit-scrollbar-thumb:hover {
+  background: #8a8989; /* Color of the scrollbar thumb on hover */
 }
