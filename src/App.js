@@ -265,7 +265,7 @@ const styles = `
 
 const App = () => {
   const [password, setPassword] = useState("");
-  const [strengthScore, setStrengthScore] = useState(0); // 0=None, 1=Weak, 2=Medium, 3=Strong
+  const [strengthScore, setStrengthScore] = useState(0); 
   const [showPassword, setShowPassword] = useState(false);
   const [crackTime, setCrackTime] = useState("");
   const [copyStatus, setCopyStatus] = useState("");
@@ -279,7 +279,7 @@ const App = () => {
     special: false,
   });
 
-  // RESTORED: Your original robust time formatting function
+
   const convertTime = (seconds) => {
     if (seconds <= 0) return "Instantly";
     
@@ -301,7 +301,7 @@ const App = () => {
     let remaining = seconds;
     let formatted = [];
 
-    // Limit to top 2 units for readability in UI
+   
     let unitsFound = 0;
 
     for (let i = 0; i < timeUnits.length; i++) {
@@ -335,7 +335,7 @@ const App = () => {
   };
 
   useEffect(() => {
-    // 1. Check Criteria
+  
     const newCriteria = {
       length: password.length >= 8,
       lowercase: /[a-z]/.test(password),
@@ -351,15 +351,14 @@ const App = () => {
       return;
     }
 
-    // 2. Calculate Crack Time (Restored Logic + Entropy)
-    // We use character set size to determine combinations
+  
     let poolSize = 0;
     if (/[a-z]/.test(password)) poolSize += 26;
     if (/[A-Z]/.test(password)) poolSize += 26;
     if (/\d/.test(password)) poolSize += 10;
     if (/[^a-zA-Z0-9]/.test(password)) poolSize += 32;
 
-    // Safety fallback for empty pool
+  
     if (poolSize === 0) poolSize = 1;
 
     const combinations = Math.pow(poolSize, password.length);
@@ -368,17 +367,16 @@ const App = () => {
     
     setCrackTime(convertTime(seconds));
 
-    // 3. Determine Strength Level
-    // RESTORED: Your original logic checking BOTH conditions AND time
+   
     const unmetConditions = Object.values(newCriteria).filter(val => !val).length;
     let newStrength = 0;
 
     if (unmetConditions > 3 || seconds < 30) {
-      newStrength = 1; // Weak
-    } else if (unmetConditions > 1 || seconds < 31536000) { // < 1 year
-      newStrength = 2; // Medium
+      newStrength = 1; 
+    } else if (unmetConditions > 1 || seconds < 31536000) { 
+      newStrength = 2; 
     } else {
-      newStrength = 3; // Strong
+      newStrength = 3;
     }
 
     setStrengthScore(newStrength);
@@ -469,7 +467,7 @@ const App = () => {
             </div>
           )}
 
-          {/* RESTORED: Tips Section */}
+        
           <div className="tips-section">
             <button
               onClick={() => setShowTips(!showTips)}
